@@ -1,0 +1,1 @@
+{ positive : Bool, magnitude : Natural }

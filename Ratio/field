@@ -1,0 +1,80 @@
+    let Ratio = ./Type
+
+in    λ(a : Type)
+    → λ(ring : ./../../dhall-bhat/Ring/Set a)
+    →     let unit = ring.multiplicative.identity {=}
+      
+      in    { additive =
+                { identity =
+                      λ(_ : {})
+                    → { numerator =
+                          ring.additive.identity {=}
+                      , denominator =
+                          unit
+                      }
+                , inverse =
+                      λ(n : Ratio a)
+                    → { numerator =
+                          ring.additive.inverse n.numerator
+                      , denominator =
+                          n.denominator
+                      }
+                , op =
+                      λ(t : { _1 : Ratio a, _2 : Ratio a })
+                    → { numerator =
+                          ring.additive.op
+                          { _1 =
+                              ring.multiplicative.op
+                              { _1 = t._1.numerator, _2 = t._2.denominator }
+                          , _2 =
+                              ring.multiplicative.op
+                              { _1 = t._1.denominator, _2 = t._2.numerator }
+                          }
+                      , denominator =
+                          ring.multiplicative.op
+                          { _1 = t._1.denominator, _2 = t._2.denominator }
+                      }
+                , preLE =
+                      λ(m : Ratio a)
+                    → λ(n : Ratio a)
+                    → ring.additive.preLE
+                      ( ring.multiplicative.op
+                        { _1 = m.numerator, _2 = n.denominator }
+                      )
+                      ( ring.multiplicative.op
+                        { _1 = m.denominator, _2 = n.numerator }
+                      )
+                }
+            , multiplicative =
+                { identity =
+                      λ(_ : {})
+                    → { numerator =
+                          ring.multiplicative.identity {=}
+                      , denominator =
+                          unit
+                      }
+                , inverse =
+                      λ(n : Ratio a)
+                    → { numerator = n.denominator, denominator = n.numerator }
+                , op =
+                      λ(t : { _1 : Ratio a, _2 : Ratio a })
+                    → { numerator =
+                          ring.multiplicative.op
+                          { _1 = t._1.numerator, _2 = t._2.numerator }
+                      , denominator =
+                          ring.multiplicative.op
+                          { _1 = t._1.denominator, _2 = t._2.denominator }
+                      }
+                , preLE =
+                      λ(m : Ratio a)
+                    → λ(n : Ratio a)
+                    → ring.additive.preLE
+                      ( ring.multiplicative.op
+                        { _1 = m.numerator, _2 = n.denominator }
+                      )
+                      ( ring.multiplicative.op
+                        { _1 = m.denominator, _2 = n.numerator }
+                      )
+                }
+            }
+          : ./../../dhall-bhat/Field/Set (Ratio a)

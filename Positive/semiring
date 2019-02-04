@@ -1,0 +1,33 @@
+    let Positive = ./Type
+
+in    { additive =
+          { op =
+                λ(t : { _1 : Positive, _2 : Positive })
+              → merge
+                { Succ =
+                      λ(m : Natural)
+                    → merge
+                      { Succ = λ(n : Natural) → < Succ = 1 + m + n > }
+                      t._2
+                }
+                t._1
+          }
+      , multiplicative =
+          { identity =
+              λ(_ : {}) → < Succ = 0 >
+          , op =
+                λ(t : { _1 : Positive, _2 : Positive })
+              → merge
+                { Succ =
+                      λ(m : Natural)
+                    → merge
+                      { Succ = λ(n : Natural) → < Succ = m * n + m + n > }
+                      t._2
+                }
+                t._1
+          }
+      }
+    : ./../../dhall-bhat/Semiring/Type
+      Type
+      ./../../dhall-bhat/Category/Monoidal/Set/cartesian
+      ./Type

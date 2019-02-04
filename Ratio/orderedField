@@ -1,0 +1,21 @@
+    let Ratio = ./Type
+
+in    λ(a : Type)
+    → λ(ring : ./../../dhall-bhat/Ring/Ordered/Type a)
+    →     { additive =
+              { le =
+                    λ(m : Ratio a)
+                  → λ(n : Ratio a)
+                  → ring.additive.le
+                    ( ring.multiplicative.op
+                      { _1 = m.numerator, _2 = n.denominator }
+                    )
+                    ( ring.multiplicative.op
+                      { _1 = m.denominator, _2 = n.numerator }
+                    )
+              }
+          }
+        ∧ ./partiallyOrderedField
+          a
+          (./../../dhall-bhat/Ring/Ordered/extractPartiallyOrderedRing a ring)
+      : ./../../dhall-bhat/Field/Ordered/Type (Ratio a)

@@ -1,0 +1,33 @@
+    let Ratio = ./Type
+
+in    λ(a : Type)
+    → λ(ring : ./../../dhall-bhat/Ring/PartiallyOrdered/Type a)
+    →     let unit = ring.multiplicative.identity {=}
+      
+      in      { additive =
+                  { partialLE =
+                        λ(m : Ratio a)
+                      → λ(n : Ratio a)
+                      → ring.additive.partialLE
+                        ( ring.multiplicative.op
+                          { _1 = m.numerator, _2 = n.denominator }
+                        )
+                        ( ring.multiplicative.op
+                          { _1 = m.denominator, _2 = n.numerator }
+                        )
+                  , eq =
+                        λ(m : Ratio a)
+                      → λ(n : Ratio a)
+                      → ring.additive.eq
+                        ( ring.multiplicative.op
+                          { _1 = m.numerator, _2 = n.denominator }
+                        )
+                        ( ring.multiplicative.op
+                          { _1 = m.denominator, _2 = n.numerator }
+                        )
+                  }
+              }
+            ∧ ./field
+              a
+              (./../../dhall-bhat/Ring/PartiallyOrdered/extractSetRing a ring)
+          : ./../../dhall-bhat/Field/PartiallyOrdered/Type (Ratio a)

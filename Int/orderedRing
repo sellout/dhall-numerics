@@ -1,0 +1,68 @@
+  λ ( zipWith
+    :   ∀(a : Type)
+      → ∀(b : Type)
+      → ∀(c : Type)
+      → (a → b → c)
+      → List a
+      → List b
+      → List c
+    )
+→     let Int = ./Type
+  
+  in  let Natural/eq = (./../../dada/Natural/eq zipWith).eq
+  
+  in  let Natural/le = ./../../dada/Natural/lt
+  
+  in  let le =
+              λ(m : Int)
+            → λ(n : Int)
+            →       if m.positive
+              
+              then        if n.positive
+                    
+                    then  Natural/le m.magnitude n.magnitude
+                    
+                    else      Natural/isZero m.magnitude
+                          &&  Natural/isZero n.magnitude
+              
+              else  if n.positive
+              
+              then  Natural/isZero m.magnitude && Natural/isZero n.magnitude
+              
+              else  Natural/le n.magnitude m.magnitude
+  
+  in    { additive =
+            { eq =
+                λ(m : Int) → λ(n : Int) → le m n && le n m
+            , identity =
+                λ(_ : {}) → { positive = True, magnitude = 0 }
+            , inverse =
+                  λ(n : Int)
+                → { positive = n.positive != True, magnitude = n.magnitude }
+            , op =
+                  λ(t : { _1 : Int, _2 : Int })
+                → { positive =
+                      t._1.positive
+                  , magnitude =
+                      t._1.magnitude + t._2.magnitude
+                  }
+            , le =
+                le
+            , partialLE =
+                λ(m : Int) → λ(n : Int) → Some (le m n)
+            , preLE =
+                λ(m : Int) → λ(n : Int) → Some (le m n)
+            }
+        , multiplicative =
+            { identity =
+                λ(_ : {}) → { positive = True, magnitude = 1 }
+            , op =
+                  λ(t : { _1 : Int, _2 : Int })
+                → { positive =
+                      t._1.positive
+                  , magnitude =
+                      t._1.magnitude * t._2.magnitude
+                  }
+            }
+        }
+      : ./../../dhall-bhat/Ring/Ordered/Type Int
